@@ -1,0 +1,24 @@
+{
+  "name": "YalantisNode",
+  "version": "1.0.0",
+  "description": "Test task for Yalantis Node.js courses",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vodopolov/yalantis-node-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vodopolov/yalantis-node-test/issues"
+  },
+  "homepage": "https://github.com/vodopolov/yalantis-node-test#readme",
+  "devDependencies": {
+    "@types/node": "^16.6.1",
+    "typescript": "^4.3.5"
+  }
+}
