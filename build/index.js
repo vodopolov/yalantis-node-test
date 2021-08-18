@@ -23,17 +23,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv = __importStar(require("dotenv"));
-var express_1 = __importDefault(require("express"));
 var log4js_1 = __importDefault(require("log4js"));
+var routing_controllers_1 = require("routing-controllers");
+var UserController_1 = require("./controllers/UserController");
 dotenv.config();
 var logger = log4js_1.default.getLogger();
-logger.level = process.env.LOG_LEVEL || "debug";
-logger.info('log4js log info');
-logger.debug('log4js log debug');
-logger.error('log4js log error');
-var app = express_1.default();
+logger.level = process.env.LOG_LEVEL || 'debug';
 var port = process.env.PORT;
-app.get('/', function (request, response) {
-    response.send('Hello world!');
+var app = routing_controllers_1.createExpressServer({
+    controllers: [UserController_1.UserController]
 });
 app.listen(port, function () { return console.log("Running on port " + port); });
