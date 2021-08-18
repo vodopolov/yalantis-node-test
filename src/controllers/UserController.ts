@@ -1,17 +1,22 @@
+import { Response } from 'express'
 import 'reflect-metadata'
-import { Body, Controller, Get, OnUndefined, Param, Post } from 'routing-controllers'
-import { UserProfile } from '../model/UserProfile'
+import { Body, Controller, Post, Res } from 'routing-controllers'
+import { IUserProfileDao } from '../models/IUserProfileDao'
+import { UserProfile } from '../models/UserProfile'
+import { UserProfileDaoFile } from '../models/UserProfileDaoFile'
 
 @Controller()
 export class UserController {
-  @Get('/users/:id')
-  getOne(@Param('id') id: number) {
-    return 'This action returns user #' + id
+  private readonly _userDao: IUserProfileDao = new UserProfileDaoFile()
+
+  @Post('/users/')
+  postOne(@Body() info: UserProfile, @Res() response: Response) {
+    const id = this._userDao.save(info)
+    return response.send({ success: true, msg: `User data added successfully. Id: ${id}` })
   }
 
-  @Post('/users')
-  @OnUndefined(204)
-  postOne(@Body() info: UserProfile) {
-    console.log(JSON.stringify(info))
-  }
+  // @Get('/users/all/')
+  // getAll(@Res() response: Response) {
+  //   return response.send(JSON.stringify(this._userDao.getAll()))
+  // }
 }

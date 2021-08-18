@@ -18,19 +18,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv = __importStar(require("dotenv"));
-var log4js_1 = __importDefault(require("log4js"));
 var routing_controllers_1 = require("routing-controllers");
 var UserController_1 = require("./controllers/UserController");
+var GlobalErrorHandler_1 = require("./middleware/GlobalErrorHandler");
 dotenv.config();
-var logger = log4js_1.default.getLogger();
-logger.level = process.env.LOG_LEVEL || 'debug';
 var port = process.env.PORT;
 var app = routing_controllers_1.createExpressServer({
-    controllers: [UserController_1.UserController]
+    controllers: [UserController_1.UserController],
+    middlewares: [GlobalErrorHandler_1.GlobalErrorHandler],
+    defaultErrorHandler: true
 });
 app.listen(port, function () { return console.log("Running on port " + port); });
+//# sourceMappingURL=index.js.map

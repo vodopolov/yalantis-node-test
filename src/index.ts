@@ -1,17 +1,16 @@
 import * as dotenv from 'dotenv'
-import log4js from 'log4js'
 import { createExpressServer } from 'routing-controllers'
 import { UserController } from './controllers/UserController'
+import { GlobalErrorHandler } from './middleware/GlobalErrorHandler'
 
 dotenv.config()
-
-const logger = log4js.getLogger()
-logger.level = process.env.LOG_LEVEL || 'debug'
 
 const port = process.env.PORT
 
 const app = createExpressServer({
-  controllers: [UserController]
+  controllers: [UserController],
+  middlewares: [GlobalErrorHandler],
+  defaultErrorHandler: true
 })
 
 app.listen(port, () => console.log(`Running on port ${port}`))
