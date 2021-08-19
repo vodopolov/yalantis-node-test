@@ -3,7 +3,7 @@ import { UserProfile } from './UserProfile'
 const fs = require('fs')
 
 export class UserProfileDaoFile implements IUserProfileDao {
-  private readonly path: string = 'db/users.json';
+  private readonly path: string = 'storage/users.json';
   private maxId: number = -1;
 
   getOne(id: number): UserProfile {

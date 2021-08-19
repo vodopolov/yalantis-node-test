@@ -13,7 +13,6 @@ export class UserProfile {
   @IsEmail()
   email: string
 
-  @IsDefined()
   avatarUrl: string
 
   constructor(firstName: string, secondName: string, email: string, avatarUrl: string) {
