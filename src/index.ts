@@ -12,7 +12,7 @@ const port = process.env.PORT
 const app = createExpressServer({
   controllers: [UserController],
   middlewares: [GlobalErrorHandler],
-  defaultErrorHandler: true
+  defaultErrorHandler: false
 })
 
 app.use(`/${process.env.IMAGES_STORAGE_URL}`, express.static(path.join(__dirname, '../storage/images')))
