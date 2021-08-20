@@ -7,7 +7,16 @@ export class UserProfileDaoFile implements IUserProfileDao {
   private maxId: number = -1;
 
   getOne(id: number): UserProfile {
-    throw new Error('Method not implemented.')
+    const jsonData = JSON.parse(fs.readFileSync(this.path))
+    for (const item of jsonData) {
+      const numId = Number.parseInt(item._id)
+      if (numId === id) {
+        const parsedItem = new UserProfile(item.firstName, item.secondName, item.email, item.avatarUrl)
+        parsedItem.setId(numId)
+        return parsedItem
+      }
+    }
+    throw new Error(`User not found. Id: ${id}`)
   }
 
   delete(id: number): boolean {

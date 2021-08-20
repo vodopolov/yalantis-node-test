@@ -12,9 +12,9 @@ const port = process.env.PORT
 const app = createExpressServer({
   controllers: [UserController],
   middlewares: [GlobalErrorHandler],
-  defaultErrorHandler: false
+  defaultErrorHandler: true
 })
 
-app.use('/images', express.static(path.join(__dirname, '../storage/images')))
+app.use(`/${process.env.IMAGES_STORAGE_URL}`, express.static(path.join(__dirname, '../storage/images')))
 
 app.listen(port, () => console.log(`Running on port ${port}`))
