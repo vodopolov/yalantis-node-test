@@ -3,13 +3,13 @@ import multer from 'multer'
 import 'reflect-metadata'
 import { Body, Controller, Get, Param, Post, Req, Res, UseBefore } from 'routing-controllers'
 import { IUserProfileRepository } from '../models/user/repository/IUserProfileRepository'
-import { UserProfileFileRepository } from '../models/user/repository/UserProfileFileRepository'
+import { UserProfileSqliteRepository } from '../models/user/repository/UserProfileSqliteRepository'
 import { UserProfile } from '../models/user/UserProfile'
 import { storage as customStorage } from './CustomMulterStorage'
 
 @Controller()
 export class UserController {
-  private readonly _userRepository: IUserProfileRepository = new UserProfileFileRepository()
+  private readonly _userRepository: IUserProfileRepository = new UserProfileSqliteRepository()
 
   @Post('/form/')
   @UseBefore(multer({ storage: customStorage }).single('avatar'))

@@ -7,15 +7,17 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
   private readonly db: sqlite3.Database
 
   public constructor() {
-    this.db = new sqlite3.Database('storage/database.db', this.createTable.bind(this))
+    this.db = new sqlite3.Database('storage/database.db', this.checkTable.bind(this))
   }
 
   getOne(id: number): Promise<UserProfile> {
     return new Promise((resolve, reject) => {
-      const query = `SELECT * FROM users WHERE id = ${id}`
+      const query = `SELECT * FROM Users WHERE id = ${id}`
       this.db.get(query, (err, row) => {
         if (err) {
           return reject(err)
+        } else if (!row) {
+          return reject(new Error(`User not found. Id: ${id}`))
         }
         const profile = new UserProfile(row.firstName, row.lastName, row.email, row.avatarUrl)
         profile.setId(id)
@@ -62,16 +64,16 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
     })
   }
 
-  private createTable(err: Error | null) {
+  private checkTable(err: Error | null) {
     if (err) {
-      return console.error(err.message)
+      throw err
     }
     this.db.run(`CREATE TABLE IF NOT EXISTS Users(
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      firstName TEXT,
-      lastName TEXT,
-      email TEXT,
-      avatarUrl TEXT)`, (err) => {
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        firstName TEXT,
+        lastName TEXT,
+        email TEXT,
+        avatarUrl TEXT)`, (err) => {
       if (err) {
         throw new Error(err.message)
       } else {
