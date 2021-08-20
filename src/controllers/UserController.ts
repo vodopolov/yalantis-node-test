@@ -1,3 +1,4 @@
+import { isNumber } from 'class-validator'
 import { Request, Response } from 'express'
 import multer from 'multer'
 import 'reflect-metadata'
@@ -33,7 +34,11 @@ export class UserController {
   }
 
   @Get('/users/:id')
-  getOne(@Param('id') id: number) {
-    return this._userRepository.getOne(id)
+  getOne(@Param('id') id: number, @Res() response: Response) {
+    if (isNumber(id)) {
+      return this._userRepository.getOne(id)
+    } else {
+      return response.status(400).json({ success: false, msg: 'Id must be number' })
+    }
   }
 }
