@@ -1,4 +1,5 @@
 import { UserProfile } from '../UserProfile'
+import { UserSavedResponse } from '../UserSavedResponse'
 import { IUserProfileRepository } from './IUserProfileRepository'
 const fs = require('fs')
 
@@ -12,12 +13,12 @@ export class UserProfileFileRepository implements IUserProfileRepository {
       for (const item of jsonData) {
         const numId = Number.parseInt(item._id)
         if (numId === id) {
-          const parsedItem = new UserProfile(item.firstName, item.secondName, item.email, item.avatarUrl)
+          const parsedItem = new UserProfile(item.firstName, item.lastName, item.email, item.avatarUrl)
           parsedItem.setId(numId)
-          resolve(parsedItem)
+          return resolve(parsedItem)
         }
       }
-      reject(new Error(`User not found. Id: ${id}`))
+      return reject(new Error(`User not found. Id: ${id}`))
     })
   }
 
@@ -26,7 +27,7 @@ export class UserProfileFileRepository implements IUserProfileRepository {
       this.getAll().then((users: UserProfile[]) => {
         const filteredUsers = users.filter(user => user.getId() !== id)
         if (users.length === filteredUsers.length) {
-          resolve(false)
+          return resolve(false)
         }
         this.saveUserData(filteredUsers)
         return resolve(true)
@@ -40,7 +41,7 @@ export class UserProfileFileRepository implements IUserProfileRepository {
     return Promise.reject(new Error('Not implemented yet'))
   }
 
-  save(user: UserProfile): Promise<number> {
+  save(user: UserProfile): Promise<UserSavedResponse> {
     return new Promise((resolve, reject) => {
       this.getAll().then((users: UserProfile[]) => {
         for (const item of users) {
@@ -49,7 +50,7 @@ export class UserProfileFileRepository implements IUserProfileRepository {
         user.setId(++this.maxId)
         users.push(user)
         this.saveUserData(users)
-        return resolve(this.maxId)
+        return resolve(new UserSavedResponse(this.maxId))
       }).catch((reason) => {
         return reject(reason)
       })
@@ -61,11 +62,11 @@ export class UserProfileFileRepository implements IUserProfileRepository {
       const jsonData = JSON.parse(fs.readFileSync(this.path))
       const result: UserProfile[] = []
       for (const item of jsonData) {
-        const parsedItem = new UserProfile(item.firstName, item.secondName, item.email, item.avatarUrl)
+        const parsedItem = new UserProfile(item.firstName, item.lastName, item.email, item.avatarUrl)
         parsedItem.setId(Number.parseInt(item._id))
         result.push(parsedItem)
       }
-      resolve(result)
+      return resolve(result)
     })
   }
 

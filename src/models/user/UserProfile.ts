@@ -7,7 +7,7 @@ export class UserProfile {
   firstName: string
 
   @IsDefined()
-  secondName: string
+  lastName: string
 
   @IsDefined()
   @IsEmail()
@@ -15,8 +15,8 @@ export class UserProfile {
 
   avatarUrl: string
 
-  constructor(firstName: string, secondName: string, email: string, avatarUrl: string) {
-    this.secondName = secondName
+  constructor(firstName: string, lastName: string, email: string, avatarUrl: string) {
+    this.lastName = lastName
     this.firstName = firstName
     this.avatarUrl = avatarUrl
     this.email = email
