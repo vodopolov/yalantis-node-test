@@ -49,14 +49,6 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
     })
   }
 
-  delete(id: number): Promise<boolean> {
-    throw new Error('Method not implemented.')
-  }
-
-  update(user: UserProfile): Promise<boolean> {
-    throw new Error('Method not implemented.')
-  }
-
   save(user: UserProfile): Promise<UserSavedResponse> {
     return new Promise((resolve, reject) => {
       this.db.run(this.tableCreationQuery, (err) => {
@@ -72,6 +64,14 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
         })
       })
     })
+  }
+
+  delete(id: number): Promise<boolean> {
+    throw new Error('Method not implemented.')
+  }
+
+  update(user: UserProfile): Promise<boolean> {
+    throw new Error('Method not implemented.')
   }
 
   private checkTable(err: Error | null) {

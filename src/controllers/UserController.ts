@@ -6,6 +6,7 @@ import { Body, Controller, Get, Param, Post, Req, Res, UseBefore } from 'routing
 import { IUserProfileRepository } from '../models/user/repository/IUserProfileRepository'
 import { UserProfileSqliteRepository } from '../models/user/repository/UserProfileSqliteRepository'
 import { UserProfile } from '../models/user/UserProfile'
+import { ImageProcessor } from '../utils/ImageProcessor'
 import { storage as customStorage } from './CustomMulterStorage'
 
 @Controller()
@@ -20,9 +21,11 @@ export class UserController {
       if (!file || !file.filename) {
         return response.status(400).json({ success: false, msg: 'No image or wrong format' })
       }
-      const relativeImageUrl = `/${process.env.IMAGES_STORAGE_URL}/${file.filename}`
-      const completeProfile = new UserProfile(profile.firstName, profile.lastName, profile.email, relativeImageUrl)
-      return this._userRepository.save(completeProfile)
+      return ImageProcessor.cropImage(file.filename, 200, 200).then(croppedFilename => {
+        const relativeImageUrl = `/${process.env.IMAGES_STORAGE_URL}/${croppedFilename}`
+        const completeProfile = new UserProfile(profile.firstName, profile.lastName, profile.email, relativeImageUrl)
+        return this._userRepository.save(completeProfile)
+      })
     } catch (e) {
       console.error(e)
     }
