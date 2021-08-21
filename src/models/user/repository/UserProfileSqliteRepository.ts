@@ -5,6 +5,11 @@ import { IUserProfileRepository } from './IUserProfileRepository'
 
 export class UserProfileSqliteRepository implements IUserProfileRepository {
   private readonly db: sqlite3.Database
+  private readonly tableCreationQuery = `CREATE TABLE IF NOT EXISTS Users(id INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstName TEXT,
+    lastName TEXT,
+    email TEXT,
+    avatarUrl TEXT)`
 
   public constructor() {
     this.db = new sqlite3.Database('storage/database.db', this.checkTable.bind(this))
@@ -54,12 +59,17 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
 
   save(user: UserProfile): Promise<UserSavedResponse> {
     return new Promise((resolve, reject) => {
-      const query = 'INSERT INTO Users(firstName, lastName, email, avatarUrl) VALUES(?, ?, ?, ?)'
-      this.db.run(query, [user.firstName, user.lastName, user.email, user.avatarUrl], function (err) {
+      this.db.run(this.tableCreationQuery, (err) => {
         if (err) {
           return reject(err)
         }
-        return resolve(new UserSavedResponse(this.lastID))
+        const query = 'INSERT INTO Users(firstName, lastName, email, avatarUrl) VALUES(?, ?, ?, ?)'
+        this.db.run(query, [user.firstName, user.lastName, user.email, user.avatarUrl], function (err) {
+          if (err) {
+            return reject(err)
+          }
+          return resolve(new UserSavedResponse(this.lastID))
+        })
       })
     })
   }
@@ -68,12 +78,7 @@ export class UserProfileSqliteRepository implements IUserProfileRepository {
     if (err) {
       throw err
     }
-    this.db.run(`CREATE TABLE IF NOT EXISTS Users(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        firstName TEXT,
-        lastName TEXT,
-        email TEXT,
-        avatarUrl TEXT)`, (err) => {
+    this.db.run(this.tableCreationQuery, (err) => {
       if (err) {
         throw new Error(err.message)
       } else {
